@@ -1,0 +1,89 @@
+version: 2
+
+sources:
+  - name: raw_feed
+    schema: public
+    tables:
+      - name: stg_raw_orders
+      - name: stg_raw_clickstream
+      - name: stg_raw_payments
+      - name: stg_raw_customers
+      - name: stg_raw_products
+
+models:
+  - name: stg_orders
+    description: "Cleaned and deduplicated streaming orders"
+    columns:
+      - name: order_id
+        description: "Primary key for orders"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: product_id
+        tests:
+          - not_null
+      - name: quantity
+        tests:
+          - not_null
+      - name: total_amount
+        tests:
+          - not_null
+      - name: order_status
+        tests:
+          - accepted_values:
+              values: ['COMPLETED', 'PENDING', 'CANCELLED']
+
+  - name: stg_clickstream
+    description: "Cleaned and deduplicated streaming clickstream events"
+    columns:
+      - name: event_id
+        description: "Primary key for click events"
+        tests:
+          - unique
+          - not_null
+      - name: session_id
+        tests:
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: event_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['view', 'add_to_cart', 'checkout']
+
+  - name: stg_payments
+    description: "Cleaned payment settlement records"
+    columns:
+      - name: payment_id
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        tests:
+          - not_null
+      - name: amount
+        tests:
+          - not_null
+      - name: payment_status
+        tests:
+          - accepted_values:
+              values: ['SUCCESS', 'FAILED', 'REFUNDED']
+
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_products
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null

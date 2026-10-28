@@ -1,0 +1,29 @@
+name: 'dbt_ecommerce'
+version: '1.0.0'
+config-version: 2
+
+profile: 'ecommerce_dw'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  dbt_ecommerce:
+    staging:
+      +schema: staging
+      +materialized: view
+    marts:
+      core:
+        +schema: warehouse
+        +materialized: table
+      analytics:
+        +schema: warehouse
+        +materialized: table

@@ -1,0 +1,94 @@
+// ==============================================================================
+// Power BI DAX Measures for Streaming E-Commerce Star Schema Model
+// ==============================================================================
+
+// ------------------------------------------------------------------------------
+// 1. Sales & Revenue Key Measures
+// ------------------------------------------------------------------------------
+
+Total Revenue = 
+SUM(fct_orders[revenue])
+
+Total Orders = 
+DISTINCTCOUNT(fct_orders[order_id])
+
+Total Units Sold = 
+SUM(fct_orders[quantity])
+
+Average Order Value (AOV) = 
+DIVIDE([Total Revenue], [Total Orders], 0)
+
+Average Units Per Order = 
+DIVIDE([Total Units Sold], [Total Orders], 0)
+
+// ------------------------------------------------------------------------------
+// 2. Conversion Funnel Measures
+// ------------------------------------------------------------------------------
+
+Total Product Views = 
+CALCULATE(
+    DISTINCTCOUNT(fct_clickstream[session_id]),
+    fct_clickstream[event_type] = "view"
+)
+
+Total Add to Carts = 
+CALCULATE(
+    DISTINCTCOUNT(fct_clickstream[session_id]),
+    fct_clickstream[event_type] = "add_to_cart"
+)
+
+Total Checkouts Initiated = 
+CALCULATE(
+    DISTINCTCOUNT(fct_clickstream[session_id]),
+    fct_clickstream[event_type] = "checkout"
+)
+
+Total Purchases = 
+[Total Orders]
+
+View to Cart Rate = 
+DIVIDE([Total Add to Carts], [Total Product Views], 0)
+
+Cart to Checkout Rate = 
+DIVIDE([Total Checkouts Initiated], [Total Add to Carts], 0)
+
+Checkout to Purchase Rate = 
+DIVIDE([Total Purchases], [Total Checkouts Initiated], 0)
+
+Overall Conversion Rate = 
+DIVIDE([Total Purchases], [Total Product Views], 0)
+
+// ------------------------------------------------------------------------------
+// 3. User & Customer Engagement Measures
+// ------------------------------------------------------------------------------
+
+Total Unique Customers = 
+DISTINCTCOUNT(fct_orders[customer_key])
+
+Average Revenue Per User (ARPU) = 
+DIVIDE([Total Revenue], [Total Unique Customers], 0)
+
+Daily Active Users (DAU) = 
+DISTINCTCOUNT(fct_clickstream[customer_key])
+
+Total Sessions = 
+DISTINCTCOUNT(fct_clickstream[session_id])
+
+Events Per Session = 
+DIVIDE(COUNTROWS(fct_clickstream), [Total Sessions], 0)
+
+// ------------------------------------------------------------------------------
+// 4. Time Intelligence Measures
+// ------------------------------------------------------------------------------
+
+Revenue MTD = 
+TOTALMTD([Total Revenue], dim_date[date])
+
+Revenue YTD = 
+TOTALYTD([Total Revenue], dim_date[date])
+
+Revenue Prior Month = 
+CALCULATE([Total Revenue], DATEADD(dim_date[date], -1, MONTH))
+
+Revenue MoM Growth % = 
+DIVIDE([Total Revenue] - [Revenue Prior Month], [Revenue Prior Month], 0)

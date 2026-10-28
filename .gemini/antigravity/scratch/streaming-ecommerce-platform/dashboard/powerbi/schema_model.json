@@ -1,0 +1,81 @@
+{
+  "name": "EcommerceStarSchemaModel",
+  "version": "1.0",
+  "tables": [
+    {
+      "name": "fct_orders",
+      "type": "Fact",
+      "columns": ["order_id", "customer_key", "product_key", "date_key", "quantity", "revenue", "order_status", "order_timestamp"]
+    },
+    {
+      "name": "fct_clickstream",
+      "type": "Fact",
+      "columns": ["event_id", "customer_key", "product_key", "date_key", "event_type", "session_id", "device", "referrer", "event_timestamp"]
+    },
+    {
+      "name": "dim_customers",
+      "type": "Dimension",
+      "columns": ["customer_key", "customer_id", "name", "email", "city", "state", "country", "signup_date"]
+    },
+    {
+      "name": "dim_products",
+      "type": "Dimension",
+      "columns": ["product_key", "product_id", "name", "category", "price", "stock"]
+    },
+    {
+      "name": "dim_date",
+      "type": "Dimension",
+      "columns": ["date_key", "date", "day_of_month", "month", "month_name", "quarter", "year", "day_of_week", "day_name", "is_weekend"]
+    }
+  ],
+  "relationships": [
+    {
+      "fromTable": "fct_orders",
+      "fromColumn": "customer_key",
+      "toTable": "dim_customers",
+      "toColumn": "customer_key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection"
+    },
+    {
+      "fromTable": "fct_orders",
+      "fromColumn": "product_key",
+      "toTable": "dim_products",
+      "toColumn": "product_key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection"
+    },
+    {
+      "fromTable": "fct_orders",
+      "fromColumn": "date_key",
+      "toTable": "dim_date",
+      "toColumn": "date_key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection"
+    },
+    {
+      "fromTable": "fct_clickstream",
+      "fromColumn": "customer_key",
+      "toTable": "dim_customers",
+      "toColumn": "customer_key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection"
+    },
+    {
+      "fromTable": "fct_clickstream",
+      "fromColumn": "product_key",
+      "toTable": "dim_products",
+      "toColumn": "product_key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection"
+    },
+    {
+      "fromTable": "fct_clickstream",
+      "fromColumn": "date_key",
+      "toTable": "dim_date",
+      "toColumn": "date_key",
+      "cardinality": "ManyToOne",
+      "crossFilteringBehavior": "OneDirection"
+    }
+  ]
+}

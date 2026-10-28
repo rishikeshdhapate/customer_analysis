@@ -1,0 +1,25 @@
+ecommerce_dw:
+  target: postgres
+  outputs:
+    postgres:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'postgres-dw') }}"
+      user: "{{ env_var('POSTGRES_USER', 'postgres') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD', 'postgres') }}"
+      port: "{{ env_var('POSTGRES_PORT', '5432') | int }}"
+      dbname: "{{ env_var('POSTGRES_DB', 'ecommerce_dw') }}"
+      schema: "{{ env_var('POSTGRES_SCHEMA', 'warehouse') }}"
+      threads: 4
+      keepalives_idle: 0
+
+    snowflake:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', 'your_account') }}"
+      user: "{{ env_var('SNOWFLAKE_USER', 'your_user') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD', 'your_password') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'SYSADMIN') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'ECOMMERCE_DW') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'COMPUTE_WH') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'MARTS') }}"
+      threads: 4
+      client_session_keep_alive: False

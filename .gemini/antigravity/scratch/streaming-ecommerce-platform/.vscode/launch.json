@@ -1,0 +1,74 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "1. Run Local Pipeline Demo (End-to-End)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/run_local_demo.py",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "2. Run Streamlit Executive Dashboard",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "streamlit",
+      "args": ["run", "${workspaceFolder}/dashboard/app.py", "--server.port=8501"],
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "POSTGRES_HOST": "localhost",
+        "POSTGRES_PORT": "5432",
+        "POSTGRES_DB": "ecommerce_dw",
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "postgres"
+      }
+    },
+    {
+      "name": "3. Run Event Producer (Dry Run Simulation)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/producers/run_producer.py",
+      "args": ["--dry-run", "--duration", "30", "--rate", "5"],
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "4. Run Event Producer (Live Kafka)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/producers/run_producer.py",
+      "args": ["--bootstrap-servers", "localhost:9092", "--rate", "5"],
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "5. Run Pytest Suite",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["tests/", "-v"],
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "6. Generate Sample Datasets (CSV/JSON)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/generate_sample_data.py",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    }
+  ]
+}
